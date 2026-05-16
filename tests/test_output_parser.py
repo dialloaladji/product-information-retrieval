@@ -50,6 +50,7 @@ def test_normalize_ecommerce_shaped_output() -> None:
         "source_urls": [],
         "confidence_score": 0.0,
         "missing_fields": [],
+        "is_electrical_or_industrial_product": True,
     }
 
 
