@@ -1,22 +1,22 @@
 # Product Information Retrieval
 
-Pipeline d'enrichissement de produits industriels et électriques à partir d'un GTIN/EAN.
+Pipeline for enriching industrial and electrical products from a GTIN/EAN barcode.
 
-## Ce que ça fait
+## What it does
 
-1. Reçoit un GTIN (8, 12, 13 ou 14 chiffres)
-2. Cherche le produit sur le web (Tavily / SerpAPI)
-3. Extrait les informations avec un LLM (Groq — Llama 3.1)
-4. Stocke le résultat en base de données
-5. Retourne : fabricant, MPN, nom du produit, catégorie, specs techniques
+1. Receives a GTIN (8, 12, 13, or 14 digits)
+2. Searches the web for product information (Tavily / SerpAPI)
+3. Extracts structured data with an LLM (Groq — Llama 3.1)
+4. Stores the result in a database
+5. Returns: manufacturer, MPN, product name, category, technical specs
 
-Produits hors scope (alimentaire, habillement, électronique grand public) → rejetés automatiquement.
+Out-of-scope products (food, clothing, consumer electronics) are automatically rejected.
 
-## Lancer le projet
+## Getting started
 
 ```bash
 cp .env.example .env
-# Remplir les clés API dans .env
+# Fill in your API keys in .env
 
 pip install -e .
 uvicorn product_retrieval.api:app --reload
@@ -24,21 +24,21 @@ uvicorn product_retrieval.api:app --reload
 
 ## Endpoints
 
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| `POST` | `/retrieve` | Enrichissement d'un GTIN |
-| `POST` | `/debug/retrieve` | Idem avec détails internes |
-| `GET` | `/runs` | Historique des appels pipeline |
-| `GET` | `/metrics` | Métriques Prometheus |
-| `GET` | `/health` | Healthcheck |
+| Method | Route | Description |
+|--------|-------|-------------|
+| `POST` | `/retrieve` | Enrich a GTIN |
+| `POST` | `/debug/retrieve` | Same with internal details |
+| `GET` | `/runs` | Pipeline call history |
+| `GET` | `/metrics` | Prometheus metrics |
+| `GET` | `/health` | Health check |
 
 ## Stack
 
-- **FastAPI** — API REST
-- **Groq (Llama 3.1 8B)** — extraction LLM
-- **Tavily** — recherche web
-- **PostgreSQL / SQLite** — stockage (Postgres via Docker, SQLite en local)
-- **Langfuse** — observabilité LLM
+- **FastAPI** — REST API
+- **Groq (Llama 3.1 8B)** — LLM extraction
+- **Tavily** — web search
+- **PostgreSQL / SQLite** — storage (Postgres via Docker, SQLite locally)
+- **Langfuse** — LLM observability
 
 ## Docker
 
