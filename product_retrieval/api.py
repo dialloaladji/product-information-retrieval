@@ -79,7 +79,7 @@ def retrieve(
     pipeline: ProductEnrichmentPipeline = Depends(get_pipeline),
 ) -> ProductEnrichmentOutput:
     try:
-        result = pipeline.run(body.gtin)
+        result = pipeline.run(body.gtin, body.context)
         if not result.enrichment.is_electrical_or_industrial_product:
             raise HTTPException(
                 status_code=422,
@@ -118,7 +118,7 @@ def debug_retrieve(
     pipeline: ProductEnrichmentPipeline = Depends(get_pipeline),
 ) -> DebugRetrieveOutput:
     try:
-        return pipeline.debug_run(body.gtin)
+        return pipeline.debug_run(body.gtin, body.context)
     except Exception as error:
         return DebugRetrieveOutput(
             built_query=body.gtin,

@@ -31,10 +31,10 @@ def output(gtin: str) -> ProductEnrichmentOutput:
 class StubPipeline:
     settings = type("Settings", (), {"web_search_primary": "tavily"})()
 
-    def run(self, gtin: str):
+    def run(self, gtin: str, context: str | None = None):
         return type("Result", (), {"enrichment": output(gtin)})()
 
-    def debug_run(self, gtin: str) -> DebugRetrieveOutput:
+    def debug_run(self, gtin: str, context: str | None = None) -> DebugRetrieveOutput:
         evidence = [SearchResult(title="T", url="https://example.com/product", snippet="S", source="tavily")]
         return DebugRetrieveOutput(
             built_query=gtin,

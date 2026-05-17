@@ -27,12 +27,12 @@ class ProductEnrichmentPipeline:
         )
         self.storage = storage or StorageCoordinator(self.settings)
 
-    def run(self, gtin: str) -> PipelineResult:
-        result, _ = self._execute(gtin)
+    def run(self, gtin: str, context: str | None = None) -> PipelineResult:
+        result, _ = self._execute(gtin, context)
         return result
 
-    def debug_run(self, gtin: str) -> DebugRetrieveOutput:
-        result, debug = self._execute(gtin)
+    def debug_run(self, gtin: str, context: str | None = None) -> DebugRetrieveOutput:
+        result, debug = self._execute(gtin, context)
         return DebugRetrieveOutput(
             built_query=debug["built_query"],
             primary_provider_used=self.settings.web_search_primary,
@@ -45,7 +45,7 @@ class ProductEnrichmentPipeline:
             timings_ms=result.timings_ms,
         )
 
-    def _execute(self, gtin: str) -> tuple[PipelineResult, dict]:
+    def _execute(self, gtin: str, context: str | None = None) -> tuple[PipelineResult, dict]:
         cached = self.storage.load(gtin)
         if cached is not None:
             logger.info("Cache hit for GTIN %s", gtin)
@@ -74,7 +74,7 @@ class ProductEnrichmentPipeline:
         timings_ms: dict[str, float] = {}
         started_at = time.perf_counter()
         with timed_stage("query_builder", timings_ms):
-            query = build_product_query(gtin)
+            query = build_product_query(gtin, context)
         with timed_stage("web_search", timings_ms):
             raw_results, fallback_provider_used = self._search(query)
         evidence_items = select_evidence_items(gtin, raw_results)

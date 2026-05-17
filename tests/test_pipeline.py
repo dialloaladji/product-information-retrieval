@@ -31,6 +31,11 @@ def test_query_builder_builds_enriched_query() -> None:
     assert build_product_query("6438177516927") == "6438177516927 manufacturer product specifications datasheet"
 
 
+def test_query_builder_uses_context_when_provided() -> None:
+    result = build_product_query("6438177516927", "ABB frequency converter")
+    assert result == "6438177516927 ABB frequency converter manufacturer specifications"
+
+
 def test_primary_search_keeps_top_three(monkeypatch, tmp_path: Path) -> None:
     primary = Client(results(5))
     fallback = Client(results(2, "serpapi"))

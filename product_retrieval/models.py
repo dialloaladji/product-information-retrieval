@@ -9,6 +9,7 @@ _VALID_GTIN_LENGTHS = {8, 12, 13, 14}
 
 class RetrieveRequest(BaseModel):
     gtin: str = Field(min_length=1)
+    context: str | None = Field(default=None, description="Optional free-text description to improve search precision (e.g. 'Legrand circuit breaker 20A').")
 
     @field_validator("gtin")
     @classmethod
