@@ -142,15 +142,20 @@ def normalize_llm_payload(raw_output: str | dict, gtin: str, allowed_urls: list[
     confidence_score = payload.get("confidence_score")
     if not isinstance(confidence_score, (int, float)):
         confidence_score = 0.0
+    manufacturer = payload.get("manufacturer") or payload.get("brand")
+    manufacturer_product_id = (
+        payload.get("manufacturer_product_id")
+        or payload.get("product_id")
+        or payload.get("model")
+    )
+    # If neither of the two most critical fields could be extracted, the score is meaningless.
+    if not manufacturer and not manufacturer_product_id:
+        confidence_score = 0.0
     normalized = {
         "original_reference": gtin,
         "product_name": payload.get("product_name"),
-        "manufacturer": payload.get("manufacturer") or payload.get("brand"),
-        "manufacturer_product_id": (
-            payload.get("manufacturer_product_id")
-            or payload.get("product_id")
-            or payload.get("model")
-        ),
+        "manufacturer": manufacturer,
+        "manufacturer_product_id": manufacturer_product_id,
         "serial_number": payload.get("serial_number"),
         "item_class": payload.get("item_class"),
         "category": payload.get("category"),
