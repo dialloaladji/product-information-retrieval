@@ -27,8 +27,8 @@ def results(count: int, source: str = "tavily") -> list[SearchResult]:
     ]
 
 
-def test_query_builder_wraps_gtin_in_quotes() -> None:
-    assert build_product_query("6438177516927") == '"6438177516927"'
+def test_query_builder_builds_enriched_query() -> None:
+    assert build_product_query("6438177516927") == "6438177516927 manufacturer product specifications datasheet"
 
 
 def test_primary_search_keeps_top_three(monkeypatch, tmp_path: Path) -> None:
@@ -55,7 +55,7 @@ def test_fallback_runs_only_when_primary_empty(monkeypatch, tmp_path: Path) -> N
     settings = Settings(use_mock_llm=True, sqlite_path=str(tmp_path / "db.sqlite3"))
     pipeline = ProductEnrichmentPipeline(settings, MockProductExtractor(), StorageCoordinator(settings))
     debug = pipeline.debug_run("6438177516927")
-    assert debug.built_query == '"6438177516927"'
+    assert debug.built_query == "6438177516927 manufacturer product specifications datasheet"
     assert debug.fallback_provider_used == "serpapi"
     assert len(debug.top_3_evidence_items) == 2
 
